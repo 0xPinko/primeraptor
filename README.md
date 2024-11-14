@@ -1,7 +1,7 @@
 
 # Primeraptor
 
-Primeraptor is a Terraform-powered tool for rapid deployment of Velociraptor servers on AWS, providing fast, automated setup for forensic analysis and incident response. It comes with quick customisation options for IP whitelisting, instance types, and storage, Primeraptor streamlines the process of getting endpoint agents ready for deployment so you're better prepared to assist.
+Primeraptor is a Terraform-powered tool for deploying Velociraptor servers on AWS with speed and efficiency. Designed for quick, automated setup of forensic analysis and incident response, Primeraptor allows easy customisation of IP whitelisting, instance types, and storage. After deployment, Primeraptor sends you an email with all essential details for the Velociraptor admin server, including IP address, username, password, and an S3 link for client binaries. You'll need to verify your designated email before the installation process begins. Deployment typically completes in just 4–6 minutes.
 
 ## Requirements
 
