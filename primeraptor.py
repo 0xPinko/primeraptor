@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 print(r"""
@@ -10,24 +9,23 @@ print(r"""
 ╚═╝     ╚═╝  ╚═╝╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝    ╚═════╝ ╚═╝  ╚═╝
 """)
 print("""
-Proof of Concept by Max Pilgrim
+ Proof of Concept by Max Pilgrim
 ``````````````````````````````````
 """)
 
 def get_variables():
     variables = {}
-    variables["admin_email"] = input("Enter admin email: ")
-    variables["admin_whitelist"] = input("Enter the IP addresses for admin access (comma-separated): ").split(",")
-    variables["admin_username"] = input("Enter the admin username (default 'admin'): ") or "admin"
-    variables["name"] = input("Enter the project name (default 'primeraptor'): ") or "primeraptor"
-    variables["volume_size"] = input("Enter the volume size (default 1000): ") or "1000"
-    variables["instance_type"] = input("Enter the instance type (default 'm5.large'): ") or "m5.large"
+    variables["admin_email"] = input(":: Enter admin email: ")
+    variables["admin_whitelist"] = input(":: Enter the IP addresses for admin access (comma-separated): ").split(",")
+    variables["admin_username"] = input(":: Enter the admin username (default 'admin'): ") or "admin"
+    variables["name"] = input(":: Enter the project name (default 'primeraptor'): ") or "primeraptor"
+    variables["volume_size"] = input(":: Enter the volume size (default 1000): ") or "1000"
+    variables["instance_type"] = input(":: Enter the instance type (default 'm5.large'): ") or "m5.large"
     return variables
 
 def modify_variables_tf(vars_dict):
     # Overwrite variables.tf with default values based on user input
-    variables_tf_path = os.path.join("modules", "variables.tf")
-    with open(variables_tf_path, "w") as file:
+    with open("variables.tf", "w") as file:
         for key, value in vars_dict.items():
             if isinstance(value, list):
                 formatted_value = f"[{','.join(f'\"{v.strip()}\"' for v in value)}]"
@@ -72,13 +70,11 @@ variable "instance_type" {
   default     = "m5.large"
 }
 """
-    variables_tf_path = os.path.join("modules", "variables.tf")
-    with open(variables_tf_path, "w") as file:
+    with open("variables.tf", "w") as file:
         file.writelines(original_variables)
 
 def run_terraform_command(command):
-    # Run Terraform command within the modules directory
-    process = subprocess.run(["terraform", command], text=True, cwd="modules")
+    process = subprocess.run(["terraform", command], text=True)
     if process.returncode != 0:
         print(f"Error running terraform {command}")
     else:
@@ -87,12 +83,12 @@ def run_terraform_command(command):
 def main():
     variables = get_variables()
     
-    print("Assigning variables.tf with specified requirements...")
+    print("Assigning variables.tf with specificed requirements...")
     modify_variables_tf(variables)
 
     try:
-        print("Initializing Terraform...")
-        subprocess.run(["terraform", "init"], text=True, cwd="modules")
+        print("Initialising Terraform...")
+        subprocess.run(["terraform", "init"], text=True)
         
         print("Running Terraform plan...")
         run_terraform_command("plan")
@@ -105,7 +101,7 @@ def main():
             print("Terraform apply canceled.")
     finally:
         # Restore variables.tf to original definitions without defaults
-        print("Restoring original variables.tf definitions...")
+        print("Variables Restored...")
         restore_variables_tf()
 
 if __name__ == "__main__":

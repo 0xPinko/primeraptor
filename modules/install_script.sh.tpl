@@ -1,14 +1,8 @@
 #!/bin/bash
-# -----------------------------------------------------------------------------
-# Script Name: install_script.sh
-# Project: PrimeRaptor
+# Project: PrimeRaptor (https://github.com/0xPinko/primeraptor)
 # Author: Max Pilgrim
-# GitLab: *
-# -----------------------------------------------------------------------------
 
-# +==================================+
-# | Update and packages installation |
-# +==================================+
+# Update and packages installation
 
 apt update
 apt upgrade -y
@@ -17,9 +11,7 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 ./aws/install
 
-# +==================================+
-# |    Initialization variables      |
-# +==================================+
+# Initialisation variables
 
 ADMIN_EMAIL=${admin_email}
 S3_NAME=${s3_name}
@@ -32,9 +24,7 @@ CONFIG_CLIENT="client.config.yaml"
 SERVER_IP=$(curl -sS http://checkip.amazonaws.com)
 read PASSWORD SALT PASSWORD_HASH < <(python3 -c "import os, hashlib, random; password=''.join(random.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') for _ in range(20)); salt=os.urandom(32).hex(); hash=hashlib.sha256(bytes.fromhex(salt) + password.encode()).hexdigest(); print(password, salt, hash)")
 
-# +==================================+
-# |    Download Velociraptor         |
-# +==================================+
+# Download Velociraptor
 
 mkdir velociraptor
 
@@ -52,9 +42,7 @@ echo "Download Windows MSI 32 bits"
 
 curl -s https://api.github.com/repos/Velocidex/velociraptor/releases/latest | grep "velociraptor-.*-windows-386.msi.$" | cut -d : -f 2,3 | tr -d \" | wget -O velociraptor_win_32.msi --show-progress -qi -
 
-# +============================================+
-# | Server Configuration and binary generation |
-# +============================================+
+# Server configuration and binary generation
 
 echo "Server configuration"
 
@@ -68,9 +56,7 @@ echo "Server binary generation"
 
 ./velociraptor --config $CONFIG_SERVER_FILE_DEST debian server --binary velociraptor
 
-# +============================================+
-# | Client Configuration and binary generation |
-# +============================================+
+# Client configuration and binary generation
 
 echo "Client generation"
 
@@ -84,17 +70,13 @@ echo "Windows 32 bits"
 
 ./velociraptor config repack --msi velociraptor_win_32.msi $CONFIG_CLIENT client_win_32.msi
 
-# +============================================+
-# |      Server service installation           |
-# +============================================+
+# Server service installation
 
 dpkg -i velociraptor_*.deb
 
 service velociraptor_server restart
 
-# +============================================+
-# |      Copy client file to S3                |
-# +============================================+
+# Copy client files to S3
 
 zip velociraptor.zip client_win_* velociraptor client.config.yaml
 
@@ -102,9 +84,7 @@ aws s3 cp velociraptor.zip s3://$S3_NAME
 
 PRESIGNED_URL=$(aws s3 presign s3://$S3_NAME/velociraptor.zip --expires-in 3600 --region $AWS_REGION)
 
-# +============================================+
-# |          Sending information               |
-# +============================================+
+# Sending information
 
 while true; do
     VALIDATION_STATUS=$(aws ses get-identity-verification-attributes --region $AWS_REGION --identities $ADMIN_EMAIL --output text | awk '{print $2}')

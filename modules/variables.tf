@@ -23,7 +23,7 @@ variable "admin_email" {
 
 variable "volume_size" {
   type        = number
-  description = "Volume for the instance"
+  description = "Volume for the instance (GBs)"
   default     = 1000
 }
 
