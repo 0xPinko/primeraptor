@@ -28,8 +28,9 @@ Make sure the path to `terraform.exe` is included in your system’s PATH.
 Run `aws configure` to set up your AWS credentials:
 ```bash
 aws configure
-
+```
 ### 4. Run Primeraptor
 Once you've set up Terraform and AWS CLI, navigate to the primeraptor directory and run the `primeraptor.py` script:
 ```bash
 python primeraptor.py
+```
